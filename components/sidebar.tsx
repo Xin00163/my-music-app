@@ -1,10 +1,12 @@
 import NextImage from "next/image";
+import NextLink from "next/link";
 import {
   Box,
   List,
   ListItem,
   ListIcon,
   Divider,
+  Center,
   LinkBox,
   LinkOverlay,
 } from "@chakra-ui/layout";
@@ -15,7 +17,7 @@ import {
   MdPlaylistAdd,
   MdFavorite,
 } from "react-icons/md";
-import NextLink from "next/link";
+import { usePlaylist } from "../lib/hooks";
 
 const navMenu = [
   {
@@ -48,8 +50,8 @@ const musicMenu = [
   },
 ];
 
-const playLists = new Array(30).fill(1).map((_, i) => `Playlist ${i + 1}`);
 const Sidebar = () => {
+  const { playlists } = usePlaylist();
   return (
     <Box
       width="100%"
@@ -82,7 +84,7 @@ const Sidebar = () => {
             ))}
           </List>
         </Box>
-        <Box marginBottom="20px">
+        <Box marginTop="20px">
           <List spacing={2}>
             {musicMenu.map((menu) => (
               <ListItem paddingX="20px" fontSize="16px" key={menu.name}>
@@ -103,13 +105,19 @@ const Sidebar = () => {
           </List>
         </Box>
         <Divider color="gray.800" />
-        <Box height="66%" overflow="auto" paddingY="20px">
+        <Box height="66%" overflowY="auto" paddingY="20px">
           <List spacing={2}>
-            {playLists.map((playList) => (
-              <ListItem paddingX="20px" key={playList}>
+            {playlists.map((playlist) => (
+              <ListItem paddingX="20px" key={playlist.id}>
                 <LinkBox>
-                  <NextLink href="/" passHref>
-                    <LinkOverlay>{playList}</LinkOverlay>
+                  <NextLink
+                    href={{
+                      pathname: "/playlist/[id]",
+                      query: { id: playlist.id },
+                    }}
+                    passHref
+                  >
+                    <LinkOverlay>{playlist.name}</LinkOverlay>
                   </NextLink>
                 </LinkBox>
               </ListItem>
